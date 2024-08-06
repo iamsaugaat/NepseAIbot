@@ -12,6 +12,15 @@ api_key = 'FNNCSTNXIBBFC4L1'
 def fetch_data(symbol):
     url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}&outputsize=full&datatype=csv'
     df = pd.read_csv(url)
+    
+    # Print the first few rows and columns to debug
+    print(df.head())
+    
+    # Adjust column names based on the actual data
+    df.columns = [col.strip() for col in df.columns]  # Remove any leading/trailing spaces
+    if 'timestamp' not in df.columns:
+        df.rename(columns={'timestamp': 'timestamp'}, inplace=True)  # Rename 'timestamp' column if necessary
+    
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df.set_index('timestamp', inplace=True)
     return df
